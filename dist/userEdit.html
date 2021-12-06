@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./css/global.css">
+</head>
+<style>
+    input {
+        width: 350px;
+        height: 30px;
+        border: gainsboro 1px solid;
+        border-radius: 5px;
+        margin: 15px 0;
+        padding-left: 5px;
+    }
+</style>
+<body>
+<div class="card" style="flex: 1;display: flex;flex-direction: column;align-items: center">
+    <h1 style="margin-top: 30px;margin-bottom: 30px">Personal Information</h1>
+    <label for="user">
+        <p>User name :</p>
+        <input id="user" type="text" readonly="readonly" style="background-color: gainsboro ">
+    </label>
+    <label for="old_password">
+        <p>Old password :</p>
+        <input id="old_password" type="text">
+    </label>
+    <label for="new_password">
+        <p>New password :</p>
+        <input id="new_password" type="password">
+    </label>
+    <label for="password_con">
+        <p>Confirm your new password :</p>
+        <input id="password_con" type="password">
+    </label>
+    <button onclick="addUser()" style="margin-bottom: 20px;margin-top: 20px">submit</button>
+</div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/util/token.js"></script>
+<script>
+    window.onload = async () => {
+        document.getElementById('user').setAttribute('value', sessionStorage.getItem('user'))
+    }
+    const addUser = async () => {
+        let old_password = document.getElementById('old_password').value
+        let new_password = document.getElementById('new_password').value
+        let {data: res} = await axios({
+            method: 'post',
+            url: 'http://localhost:8080/courseCatalog_war_exploded/user/changePW',
+            data: {
+                user:sessionStorage.getItem('user'),
+                old_password:old_password,
+                new_password:new_password
+            }
+        });
+        if(res.code === 200) {
+            Swal.fire({
+                title: 'edit userInfo successfully!',
+                icon: 'success',
+            })
+            setTimeout(function () {
+                window.location.href = 'student_course.html'
+            },2000)
+        }else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${res.msg}`,
+            })
+        }
+    }
+</script>
+</html>

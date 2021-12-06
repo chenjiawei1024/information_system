@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/home.css">
+<body>
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <img src="img/logo.png" alt="image loading false" style="padding: 0 30px">
+            <span class="header-font" style="line-height: 48px">Information System</span>
+        </div>
+        <div style="display: flex">
+            <img src="./img/user_img.png" alt="" style="margin-right: 40px;cursor: pointer" onclick="userPage()">
+            <button onclick="out()">out</button>
+        </div>
+    </div>
+    <div class="body">
+        <div class="side">
+            <div class="top_nav">|||</div>
+            <ul class="menu">
+                <li class="menu_list" onclick="studentPage()">
+                    <img src="img/search.png" alt="#" class="img">
+                    <span>student course</span>
+                </li>
+                <li class="menu_list" onclick="permissionPage()">
+                    <img src="img/power.png" alt="#" class="img">
+                    <span>permission sets</span>
+                </li>
+                <li class="menu_list">
+                    <img src="img/power.png" alt="#" class="img">
+                    <span>Unfinish function</span>
+                </li>
+                <li class="menu_list">
+                    <img src="img/power.png" alt="#" class="img">
+                    <span>Unfinished function</span>
+                </li>
+            </ul>
+        </div>
+        <iframe class="main" src="student_course.html"></iframe>
+    </div>
+</div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/util/token.js"></script>
+<script>
+    const out = () => {
+        window.location.href = 'index.html'
+        sessionStorage.clear();
+    }
+    let studentPage = () => {
+        document.getElementsByTagName('iframe')[0].src = 'student_course.html'
+    }
+    let permissionPage = () => {
+        document.getElementsByTagName('iframe')[0].src = 'permission_settings.html'
+    }
+    let userPage = () => {
+        document.getElementsByTagName('iframe')[0].src = 'userEdit.html'
+    }
+</script>
+</html>
