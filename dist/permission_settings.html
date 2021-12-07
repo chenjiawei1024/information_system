@@ -5,10 +5,137 @@
     <title>Title</title>
     <link rel="stylesheet" href="./css/global.css">
 </head>
+<style>
+    .table_container {
+        display: flex;
+        justify-content: center;
+    }
+    .list {
+        width: 800px;
+        padding: 24px;
+        border: 1px solid #ebeef5;
+        box-shadow: 0 1px 6px 0 rgba(0,0,0,0.1);
+    }
+    .pageIcon {
+        width: 25px;
+        height: 25px;
+        margin: 10px;
+        border: 2px solid #1396db;
+        border-radius: 50%;
+        text-align: center;
+        cursor: pointer;
+    }
+</style>
 <body>
-    <div class="card" style="flex: 1;">
-        <div class="card-header">Permission_settings</div>
-        <div class="card-body"></div>
+<div class="card">
+    <div class="card-header">Permission Settings</div>
+    <div class="card-body">
+        <div class="table_container">
+            <div class="list">
+                <table class="user_table">
+                    <thead>
+                    <tr>
+                        <td>user's name</td>
+                        <td>User permissions</td>
+                        <td>options</td>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+                <div style="display: flex">
+                    <div style="margin: 10px">Page: </div>
+                    <div style="display: flex" id="page">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div style="display: flex;justify-content: right;margin-top: 20px;margin-bottom: 20px">
+        <button onclick="window.location.href = 'addUser.html'" style="margin-right: 200px">Add</button>
+    </div>
+</div>
 </body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/util/token.js"></script>
+<script>
+    let userList;
+    let total;
+    let pageIndex = 1;
+    let pageNumber = 6;
+
+    //get user list
+    window.onload = async () => {
+        await getUserList()
+    }
+    const getUserList = async () => {
+        let table = document.getElementById('tbody')
+        let pageContainer = document.getElementById('page')
+        let { data: res } = await axios({
+            method: 'get',
+            url: 'http://127.0.0.1:3000/api/user/',
+            params: {
+                pageIndex: pageIndex,
+                pageNumber: pageNumber,
+            }
+        });
+        userList = res.data
+        total = res.total
+        let page = Math.ceil(total/pageNumber)
+        table.innerHTML = ""
+        for(let item of userList) {
+            table.innerHTML +='<tr><td>'
+                + item.c_name
+                +'</td><td>'
+                + item.c_description
+                +'</td><td>'
+                + item.plan_time
+                +'</td><td>'
+                +item.status
+                +'</td><td>'
+                + item.teacher_id
+                +'</td><td><button onclick="deleteUser('
+                +item.id
+                +')" style="font-size: 1em">delete</button><button onclick="jump('
+                +item.id
+                +')" style="font-size: 1em">edit</button></td></tr>'
+        }
+        pageContainer.innerHTML = ""
+        for (let i = 1; i <= page; i++) {
+            pageContainer.innerHTML += '<button id="'+i+'" class="pageIcon" onclick="pageChange('+i+')">'+i+'</button>'
+        }
+    }
+    //delete
+    const deleteUser = async (id) => {
+        let {data: res} = await axios({
+            method: 'delete',
+            url: `http://127.0.0.1:3000/api/users/${id}`,
+        });
+        if(res.code === 200) {
+            Swal.fire({
+                title: 'delete user successfully!',
+                icon: 'success',
+            })
+            await getUserList()
+        }else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }
+
+    const pageChange = async (i) => {
+        pageIndex = i
+        await getUserList()
+    }
+
+    const jump = (id) => {
+        sessionStorage.setItem("userId",id)
+        window.location.href = 'editUser.html'
+    }
+
+</script>
 </html>

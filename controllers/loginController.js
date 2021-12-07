@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
 const { connect } = require('../util/dbConfig')
+const bcrypt = require('bcryptjs')
 
 const Login = async (req, res) => {
     let { user, password } = req.body
-    let sql = `SELECT * FROM login WHERE user = '${user}'`
+    let sql = `SELECT * FROM user WHERE user = '${user}'`
     let callback = (err, data) => {
         if(err) {
             console.log('[SELECT ERROR] - ',err.message);
@@ -22,8 +23,6 @@ const Login = async (req, res) => {
         }
         const token = jwt.sign({ user }, "yyknk")
         res.send({'code':200, 'msg': '用户登录成功', 'token': token})
-        console.log(token)
-        console.log(data)
     }
     await connect(sql,callback)
 
@@ -31,7 +30,7 @@ const Login = async (req, res) => {
 
 const Logon = async (req, res) => {
     let { user, password } = req.body
-    let sql = `INSERT INTO login (user, password) VALUES ('${user}', ${password});`
+    let sql = `INSERT INTO user (user, password) VALUES ('${user}', ${password});`
     let callback = (err, data) => {
         if(err) {
             console.log('[SELECT ERROR] - ',err.message);
@@ -50,29 +49,74 @@ const Logon = async (req, res) => {
 }
 
 const editUser = async (req, res) => {
-    const token = String(req.headers.authorization).split(' ').pop()
-    const username = jwt.verify(token, "yyknk")
+    // const token = String(req.headers.authorization).split(' ').pop()
+    // const username = jwt.verify(token, "yyknk")
     let { user, password } = req.body
-    let sql = `UPDATE user SET;`
+    let sql = `UPDATE user SET password = ${password};`
     let callback = (err, data) => {
         if(err) {
             console.log('[SELECT ERROR] - ',err.message);
-            res.send({'code': 400, 'msg': '注册失败，请重新再试',})
+            res.send({'code': 400, 'msg': 'fail to register',})
             return
         }
         data = JSON.stringify(data)
         data = JSON.parse(data)
         res.send({
             code: 200,
-            msg: '用户注册成功!！'
+            msg: 'editing successfully！'
         })
     }
     await connect(sql,callback)
 
 }
 
+const getUserList = async (req,res) => {
+    let { pageIndex, pageNumber } = req.query
+    let index = (pageIndex-1)*pageNumber
+    let sql = `SELECT * FROM user`
+    let callback = (err,data) => {
+        if (err) {
+            console.log('[SELECT ERROR] - ',err.message);
+            res.send({'code': 400, 'msg': 'getUserList error!',})
+            return
+        }
+        data = JSON.stringify(data)
+        data = JSON.parse(data)
+        const total = data.length
+        const onePage = data.slice(index,index+pageNumber)
+        res.send({
+            code: 200,
+            data: onePage,
+            total: total,
+            msg: 'get users successfully!'
+        })
+    }
+    await connect(sql,callback)
+}
+
+const getOneUser = async (req,res) => {
+    let { userId } = req.params
+    let sql = `SELECT * FROM user where id = ${userId}`
+    let callback = (err,data) => {
+        if (err) {
+            console.log('[SELECT ERROR] - ',err.message);
+            res.send({'code': 400, 'msg': 'getUser error!',})
+            return
+        }
+        data = JSON.stringify(data)
+        data = JSON.parse(data)
+        res.send({
+            code: 200,
+            data: data
+        })
+    }
+    await connect(sql,callback)
+}
+
 module.exports = {
     Login,
     Logon,
-    editUser
+    editUser,
+    getUserList,
+    getOneUser
 }

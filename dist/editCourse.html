@@ -34,7 +34,7 @@
         status :
         <input id="status" type="text">
     </label>
-    <button onclick="addCourse()" style="margin-bottom: 20px">submit</button>
+    <button onclick="editCourse()" style="margin-bottom: 20px">submit</button>
 </div>
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -48,11 +48,8 @@
 
     const getOneCourse = async () => {
         let {data: res} = await axios({
-            method: 'post',
-            url: 'http://127.0.0.1:3000/api/course/getOneCourse',
-            data: {
-                id : sessionStorage.getItem('courseId')
-            }
+            method: 'get',
+            url: `http://127.0.0.1:3000/api/course/${sessionStorage.getItem('courseId')}`
         });
         document.getElementById('c_name').setAttribute('value',res.data[0].c_name)
         document.getElementById('c_description').setAttribute('value',res.data[0].c_description)
@@ -60,14 +57,15 @@
         document.getElementById('status').setAttribute('value',res.data[0].status)
     }
 
-    const addCourse = async () => {
+    const editCourse = async () => {
+        let id = window.sessionStorage.getItem('courseId')
         let c_name = document.getElementById('c_name').value
         let c_description = document.getElementById('c_description').value
         let teacher_id = document.getElementById('teacher_id').value
         let status = document.getElementById('status').value
         let {data: res} = await axios({
-            method: 'post',
-            url: 'http://127.0.0.1:3000/api/course/editCourse',
+            method: 'put',
+            url: `http://127.0.0.1:3000/api/course/${id}`,
             data: {
                 c_name:c_name,
                 c_description:c_description,

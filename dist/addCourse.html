@@ -48,7 +48,7 @@
     let status = document.getElementById('status').value
     let {data: res} = await axios({
       method: 'post',
-      url: 'http://127.0.0.1:3000/api/course/addCourse',
+      url: 'http://127.0.0.1:3000/api/course/',
       data: {
         c_name:c_name,
         c_description:c_description,

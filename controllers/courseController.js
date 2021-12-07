@@ -11,7 +11,7 @@ const getCourseList = async (req,res) => {
     let callback = (err,data) => {
         if (err) {
             console.log('[SELECT ERROR] - ',err.message);
-            res.send({'code': 400, 'msg': 'getUserList error!',})
+            res.send({'code': 400, 'msg': 'getCourseList error!',})
             return
         }
         data = JSON.stringify(data)
@@ -21,21 +21,22 @@ const getCourseList = async (req,res) => {
         res.send({
             code: 200,
             data: onePage,
-            total: total
+            total: total,
+            msg: 'get courses successfully!'
         })
     }
     await connect(sql,callback)
 }
 
 const getOneCourse = async (req,res) => {
-    const token = String(req.headers.authorization).split(' ').pop()
-    const username = jwt.verify(token, "yyknk")
-    let { id } = req.body
-    let sql = `SELECT * FROM course where id = ${id}`
+    // const token = String(req.headers.authorization).split(' ').pop()
+    // const username = jwt.verify(token, "yyknk")
+    let { courseId } = req.params
+    let sql = `SELECT * FROM course where id = ${courseId}`
     let callback = (err,data) => {
         if (err) {
             console.log('[SELECT ERROR] - ',err.message);
-            res.send({'code': 400, 'msg': 'getUser error!',})
+            res.send({'code': 400, 'msg': 'getCourse error!',})
             return
         }
         data = JSON.stringify(data)
@@ -49,8 +50,8 @@ const getOneCourse = async (req,res) => {
 }
 
 const addCourse = async (req,res) => {
-    const token = String(req.headers.authorization).split(' ').pop()
-    const username = jwt.verify(token, "yyknk")
+    // const token = String(req.headers.authorization).split(' ').pop()
+    // const username = jwt.verify(token, "yyknk")
     let { c_name, c_description, teacher_id, status } = req.body
     let sql = `INSERT INTO course (c_name, c_description, teacher_id, status) VALUES ('${c_name}', '${c_description}', ${teacher_id},${status});`
     let callback = (err,data) => {
@@ -71,14 +72,14 @@ const addCourse = async (req,res) => {
 }
 
 const deleteCourse = async (req,res) => {
-    const token = String(req.headers.authorization).split(' ').pop()
-    const username = jwt.verify(token, "yyknk")
-    let { id } = req.body
+    // const token = String(req.headers.authorization).split(' ').pop()
+    // const username = jwt.verify(token, "yyknk")
+    let { id } = req.params
     let sql = `DELETE FROM course WHERE id = ${id}; `
     let callback = (err,data) => {
         if (err) {
             console.log('[SELECT ERROR] - ',err.message);
-            res.send({'code': 400, 'msg': 'delete course error!',})
+            res.send({'code': 400, 'msg': 'delete course error!'})
             return
         }
         data = JSON.stringify(data)
@@ -92,21 +93,23 @@ const deleteCourse = async (req,res) => {
 }
 
 const editCourse = async (req,res) => {
-    const token = String(req.headers.authorization).split(' ').pop()
-    const username = jwt.verify(token, "yyknk")
-    let { id, c_name, c_description, teacher_id, status } = req.body
-    let sql = `UPDATE course SET c_name='${c_name}', c_description = '${c_description}', teacher_id = ${teacher_id}, status = ${status} WHERE id = ${id}; `
+    // const token = String(req.headers.authorization).split(' ').pop()
+    // const username = jwt.verify(token, "yyknk")
+    let { courseId } = req.params
+    let { c_name, c_description, teacher_id, status } = req.body
+    let sql = `UPDATE course SET c_name='${c_name}', c_description = '${c_description}', teacher_id = ${teacher_id}, status = ${status} WHERE id = ${courseId}; `
     let callback = (err,data) => {
         if (err) {
             console.log('[SELECT ERROR] - ',err.message);
-            res.send({'code': 400, 'msg': 'edit course error!',})
+            res.send({'code': 400, 'msg': 'edit course error!'})
             return
         }
         data = JSON.stringify(data)
         data = JSON.parse(data)
         res.send({
             code: 200,
-            data: data
+            data: data,
+            msg: 'editing successfully!'
         })
     }
     await connect(sql,callback)

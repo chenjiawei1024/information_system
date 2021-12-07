@@ -34,7 +34,7 @@
         <p>Confirm your new password :</p>
         <input id="password_con" type="password">
     </label>
-    <button onclick="addUser()" style="margin-bottom: 20px;margin-top: 20px">submit</button>
+    <button onclick="editUser()" style="margin-bottom: 20px;margin-top: 20px">submit</button>
 </div>
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -44,12 +44,12 @@
     window.onload = async () => {
         document.getElementById('user').setAttribute('value', sessionStorage.getItem('user'))
     }
-    const addUser = async () => {
+    const editUser = async () => {
         let old_password = document.getElementById('old_password').value
         let new_password = document.getElementById('new_password').value
         let {data: res} = await axios({
             method: 'post',
-            url: 'http://localhost:8080/courseCatalog_war_exploded/user/changePW',
+            url: 'http://127.0.0.1:3000/api/users/',
             data: {
                 user:sessionStorage.getItem('user'),
                 old_password:old_password,
