@@ -35,23 +35,20 @@
     let radio = document.getElementsByName('person')
     let type;
     for (let i = 0; i < radio.length; i++) {
-      if(radio[i].checked === true) {
+      if(radio[i].checked) {
         type = radio[i].value
-        break
       }
     }
-    console.log(type)
     // 发送 POST 请求
     let {data:res} = await axios({
       method: 'post',
-      url: 'http://127.0.0.1:3000/api/users/logon',
+      url: 'http://127.0.0.1:3000/api/user/logon',
       data: {
         user: user,
         password: password,
         type: type,
       }
     });
-    console.log(res.code)
     if(res.code === 200) {
       Swal.fire({
         title: 'create successfully!',

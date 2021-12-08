@@ -28,7 +28,7 @@
         // 发送 POST 请求
         let {data:res} = await axios({
             method: 'post',
-            url: 'http://127.0.0.1:3000/api/users/login',
+            url: 'http://127.0.0.1:3000/api/user/login',
             data: {
                 user: user,
                 password: password,
@@ -42,6 +42,7 @@
                 icon: 'success',
             })
             setTimeout(function () {
+                window.sessionStorage.setItem('user_type', res.type)
                 window.location.href = 'home.html'
             },2000)
         }else {

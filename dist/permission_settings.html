@@ -36,6 +36,7 @@
                     <thead>
                     <tr>
                         <td>user's name</td>
+                        <td>user's type</td>
                         <td>User permissions</td>
                         <td>options</td>
                     </tr>
@@ -50,9 +51,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div style="display: flex;justify-content: right;margin-top: 20px;margin-bottom: 20px">
-        <button onclick="window.location.href = 'addUser.html'" style="margin-right: 200px">Add</button>
     </div>
 </div>
 </body>
@@ -85,20 +83,28 @@
         let page = Math.ceil(total/pageNumber)
         table.innerHTML = ""
         for(let item of userList) {
+            let type;
+            let functions;
+            if(item.type === 1){
+                type = 'teacher'
+                functions = 'crud courses'
+            }else if(item.type === 2){
+                type = 'student'
+                functions = 'browse courses only'
+            }else{
+                type = 'administrator'
+                functions = 'all'
+            }
             table.innerHTML +='<tr><td>'
-                + item.c_name
+                + item.user
                 +'</td><td>'
-                + item.c_description
+                + type
                 +'</td><td>'
-                + item.plan_time
-                +'</td><td>'
-                +item.status
-                +'</td><td>'
-                + item.teacher_id
+                + functions
                 +'</td><td><button onclick="deleteUser('
-                +item.id
+                +item.userId
                 +')" style="font-size: 1em">delete</button><button onclick="jump('
-                +item.id
+                +item.userId
                 +')" style="font-size: 1em">edit</button></td></tr>'
         }
         pageContainer.innerHTML = ""
@@ -110,7 +116,7 @@
     const deleteUser = async (id) => {
         let {data: res} = await axios({
             method: 'delete',
-            url: `http://127.0.0.1:3000/api/users/${id}`,
+            url: `http://127.0.0.1:3000/api/user/${id}`,
         });
         if(res.code === 200) {
             Swal.fire({

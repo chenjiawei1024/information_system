@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./css/global.css">
+</head>
+<style>
+    input[type = 'text'],input[type = 'password'] {
+        width: 350px;
+        height: 30px;
+        border: gainsboro 1px solid;
+        border-radius: 5px;
+        margin: 15px 0;
+        padding-left: 7px;
+    }
+</style>
+<body>
+<div class="card" style="flex: 1;display: flex;flex-direction: column;align-items: center">
+    <h1 style="margin-top: 30px;margin-bottom: 30px">User Editing</h1>
+    <label for="user">
+        <p>User name :</p>
+        <input id="user" type="text" readonly="readonly" style="background-color: gainsboro ">
+    </label>
+    <label for="oldType">
+        <p>old Type :</p>
+        <input id="oldType" type="text" readonly="readonly" style="background-color: gainsboro ">
+    </label>
+    <label for="admin">
+         admin &nbsp:
+        <input type="radio" name="person" id="admin" value="0">
+    </label>
+    <label for="teacher">
+        teacher:
+        <input type="radio" name="person" id="teacher"  value="1" checked>
+    </label>
+    <label for="student">
+        student:
+        <input type="radio" name="person" id="student" value="2">
+    </label>
+    <button onclick="editUser()" style="margin-bottom: 20px;margin-top: 20px">submit</button>
+</div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/util/token.js"></script>
+<script>
+    window.onload = async () => {
+        await getOneUser()
+    }
+
+    const getOneUser = async () => {
+      let { data:res } = await axios({
+          method: 'get',
+          url: `http://127.0.0.1:3000/api/user/${sessionStorage.getItem('userId')}`
+      })
+      document.getElementById('user').setAttribute('value', res.data[0].user)
+      let oldType
+      if(res.data[0].type === 0){
+          oldType = 'administrator'
+      }  else if (res.data[0].type === 1){
+          oldType = 'teacher'
+      }else {
+          oldType = 'student'
+        }
+      document.getElementById('oldType').setAttribute('value', res.data[0].type)
+      document.getElementById('oldType').setAttribute('value', oldType)
+    }
+
+    const editUser = async () => {
+        let radio = document.getElementsByName('person')
+        let type
+        for (let i = 0; i < radio.length; i++) {
+            if(radio[i].checked) {
+                type = radio[i].value
+            }
+        }
+        let {data: res} = await axios({
+            method: 'post',
+            url: `http://127.0.0.1:3000/api/user/${sessionStorage.getItem('userId')}`,
+            data: {
+                type: type
+            }
+        });
+        if(res.code === 200) {
+            Swal.fire({
+                title: 'edit userInfo successfully!',
+                icon: 'success',
+            })
+            setTimeout(function () {
+                window.location.href = 'permission_settings.html'
+            },2000)
+        }else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${res.msg}`,
+            })
+        }
+    }
+</script>
+</html>
