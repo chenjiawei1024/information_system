@@ -1,5 +1,5 @@
 const express = require('express');
-const {getCourseList,getOneCourse, addCourse,deleteCourse, editCourse} = require('../controllers/courseController');
+const {getCourseList,getOneCourse, addCourse,deleteCourse, editCourse,getTeacherCourseList} = require('../controllers/courseController');
 const router = express.Router();
 
 /* change to the restful API */
@@ -17,5 +17,8 @@ router.delete('/:id',deleteCourse);
 
 /* edit one course */
 router.put('/:courseId',editCourse);
+
+/* get teacher course list */
+router.get('/teacher/:teacher_id',getTeacherCourseList);
 
 module.exports = router;

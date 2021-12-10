@@ -29,6 +29,7 @@
 <body>
 <div class="card">
     <div class="card-header">Student Course</div>
+    <div id="name" style="margin-left: 190px;margin-top: 20px"></div>
     <div class="card-body">
         <div class="table_container">
             <div class="list">
@@ -40,7 +41,6 @@
                         <td>planning time</td>
                         <td>status</td>
                         <td>teacher_id</td>
-                        <td>option</td>
                     </tr>
                     </thead>
                     <tbody id="tbody">
@@ -54,9 +54,6 @@
             </div>
         </div>
     </div>
-    <div style="display: flex;justify-content: right;margin-top: 20px;margin-bottom: 20px">
-        <button onclick="window.location.href = 'addCourse.html'" style="margin-right: 200px">Add</button>
-    </div>
 </div>
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -69,6 +66,7 @@
 
     //get user list
     window.onload = async () => {
+        document.getElementById('name').innerText = `Hi, ${window.sessionStorage.getItem('user')}!`
         await getCourseList()
     }
     const getCourseList = async () => {
@@ -87,6 +85,11 @@
         let page = Math.ceil(total/pageNumber)
         table.innerHTML = ""
         for(let item of courseList) {
+            if(item.status === 0) {
+                var status = 'ending'
+            }else {
+                var status = 'begins'
+            }
             table.innerHTML +='<tr><td>'
                 + item.c_name
                 +'</td><td>'
@@ -94,38 +97,14 @@
                 +'</td><td>'
                 + item.plan_time
                 +'</td><td>'
-                +item.status
+                +status
                 +'</td><td>'
                 + item.teacher_id
-                +'</td><td><button onclick="deleteCourse('
-                +item.id
-                +')" style="font-size: 1em">delete</button><button onclick="jump('
-                +item.id
-                +')" style="font-size: 1em">edit</button></td></tr>'
+                +'</td></tr>'
         }
         pageContainer.innerHTML = ""
         for (let i = 1; i <= page; i++) {
             pageContainer.innerHTML += '<button id="'+i+'" class="pageIcon" onclick="pageChange('+i+')">'+i+'</button>'
-        }
-    }
-    //delete
-    const deleteCourse = async (id) => {
-        let {data: res} = await axios({
-            method: 'delete',
-            url: `http://127.0.0.1:3000/api/course/${id}`,
-        });
-        if(res.code === 200) {
-            Swal.fire({
-                title: 'delete course successfully!',
-                icon: 'success',
-            })
-            await getCourseList()
-        }else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-            })
         }
     }
 
@@ -133,11 +112,5 @@
         pageIndex = i
         await getCourseList()
     }
-
-    const jump = (id) => {
-        sessionStorage.setItem("courseId",id)
-        window.location.href = 'editCourse.html'
-    }
-
 </script>
 </html>

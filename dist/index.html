@@ -36,6 +36,7 @@
         });
         if(res.code === 200) {
             window.sessionStorage.setItem('user', user)
+            window.sessionStorage.setItem('userId', res.userId)
             window.sessionStorage.setItem('token', res.token)
             Swal.fire({
                 title: 'Success!',

@@ -2,8 +2,6 @@ const { connect } = require('../util/dbConfig')
 const jwt = require("jsonwebtoken");
 
 const getCourseList = async (req,res) => {
-    // const token = String(req.headers.authorization).split(' ').pop()
-    // const username = jwt.verify(token, "yyknk")
     let { pageIndex, pageNumber } = req.query
     let index = (pageIndex-1)*pageNumber
     // let sql = `SELECT * FROM course LIMIT ${index},${pageNumber}`
@@ -23,6 +21,31 @@ const getCourseList = async (req,res) => {
             data: onePage,
             total: total,
             msg: 'get courses successfully!'
+        })
+    }
+    await connect(sql,callback)
+}
+
+const getTeacherCourseList = async (req,res) => {
+    let { teacher_id } = req.params
+    let { pageIndex, pageNumber } = req.query
+    let index = (pageIndex-1)*pageNumber
+    let sql = `SELECT * FROM course WHERE teacher_id = ${teacher_id}`
+    let callback = (err,data) => {
+        if (err) {
+            console.log('[SELECT ERROR] - ',err.message);
+            res.send({'code': 400, 'msg': 'getTeacherCourseList error!',})
+            return
+        }
+        data = JSON.stringify(data)
+        data = JSON.parse(data)
+        const total = data.length
+        const onePage = data.slice(index,index+pageNumber)
+        res.send({
+            code: 200,
+            data: onePage,
+            total: total,
+            msg: 'get teacher courses successfully!'
         })
     }
     await connect(sql,callback)
@@ -117,6 +140,7 @@ const editCourse = async (req,res) => {
 
 module.exports = {
     getCourseList,
+    getTeacherCourseList,
     getOneCourse,
     addCourse,
     deleteCourse,

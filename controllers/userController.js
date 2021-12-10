@@ -22,7 +22,7 @@ const Login = async (req, res) => {
             return
         }
         const token = jwt.sign({ user }, "yyknk")
-        res.send({'code':200, 'msg': '用户登录成功', 'token': token, type: data[0].type})
+        res.send({'code':200, 'msg': '用户登录成功', 'token': token, type: data[0].type, userId: data[0].userId})
     }
     await connect(sql,callback)
 

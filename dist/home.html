@@ -25,6 +25,10 @@
                     <img src="img/search.png" alt="#" class="img">
                     <span>student course</span>
                 </li>
+                <li class="menu_list" onclick="teacherPage()">
+                    <img src="img/power.png" alt="#" class="img">
+                    <span>teacher course</span>
+                </li>
                 <li class="menu_list" onclick="permissionPage()">
                     <img src="img/power.png" alt="#" class="img">
                     <span>permission sets</span>
@@ -32,10 +36,6 @@
                 <li class="menu_list">
                     <img src="img/power.png" alt="#" class="img">
                     <span>Unfinish function</span>
-                </li>
-                <li class="menu_list">
-                    <img src="img/power.png" alt="#" class="img">
-                    <span>Unfinished function</span>
                 </li>
             </ul>
         </div>
@@ -51,6 +51,8 @@
         }
         if (window.sessionStorage.getItem('user_type') === '0') {
             document.getElementsByTagName('iframe')[0].src = 'permission_settings.html'
+        }else if(window.sessionStorage.getItem('user_type') === '1'){
+            document.getElementsByTagName('iframe')[0].src = 'teacher_course.html'
         }else {
             document.getElementsByTagName('iframe')[0].src = 'student_course.html'
         }
@@ -87,6 +89,9 @@
     }
     let studentPage = () => {
         document.getElementsByTagName('iframe')[0].src = 'student_course.html'
+    }
+    let teacherPage = () => {
+        document.getElementsByTagName('iframe')[0].src = 'teacher_course.html'
     }
     let permissionPage = () => {
         document.getElementsByTagName('iframe')[0].src = 'permission_settings.html'
