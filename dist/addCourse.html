@@ -18,6 +18,10 @@
 <body>
 <div class="card" style="flex: 1;display: flex;flex-direction: column;align-items: center">
   <h1 style="margin-top: 30px;margin-bottom: 30px">Add Course</h1>
+  <label for="teacher_id">
+    teacher id :
+    <input id="teacher_id" type="text" readonly>
+  </label>
   <label for="c_name">
     course name :
     <input id="c_name" type="text">
@@ -25,10 +29,6 @@
   <label for="c_description">
     course desc :
     <input id="c_description" ype="text">
-  </label>
-  <label for="teacher_id">
-    teacher id :
-    <input id="teacher_id" type="text">
   </label>
   <label for="status">
     status :
@@ -41,6 +41,9 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/util/token.js"></script>
 <script>
+  window.onload = () => {
+    document.getElementById('teacher_id').setAttribute('value',window.sessionStorage.getItem('userId'))
+  }
   const addCourse = async () => {
     let c_name = document.getElementById('c_name').value
     let c_description = document.getElementById('c_description').value
@@ -62,7 +65,7 @@
         icon: 'success',
       })
       setTimeout(function () {
-        window.location.href = 'student_course.html'
+        window.location.href = 'teacher_course.html'
       },2000)
     }else {
       Swal.fire({
